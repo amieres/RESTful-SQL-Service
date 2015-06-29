@@ -6,7 +6,7 @@ Run as administrator
 
 Currently only GET is implemented.
 
-It supports json and xml
+It supports json and xml. It uses Newtonsoft.json.
 
 usage:
 http://*:80/SQLServer/[database]/[schema]/[table]/[KeyValue][KeyField1/KeyValue1[/KeyField2/KeyValue2...]]?option1&option2...
