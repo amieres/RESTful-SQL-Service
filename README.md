@@ -12,6 +12,7 @@ usage:
 http://*:80/SQLServer/[database]/[schema]/[table]/[KeyValue][KeyField1/KeyValue1[/KeyField2/KeyValue2...]]?option1&option2...
 
 options:
+
 	includecount	=fieldname
 	page          =n
 	perpage       =recordsperpage
