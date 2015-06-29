@@ -1,9 +1,10 @@
 # RESTful-SQL-Service
 This is a simple and generic REST service for SQL Server
 It is built in windows forms using C# and .net 4.5.1
+
 Run as administrator
 
-currently only GET is implemented.
+Currently only GET is implemented.
 
 It supports json and xml
 
