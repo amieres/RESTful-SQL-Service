@@ -14,7 +14,7 @@ namespace REST.Service {
         public Form1() {
             InitializeComponent();
             sqlWebService.ListenerPrefix = "http://*:80/SQLServer/";
-            sqlWebService.ConnectionString = "Data Source=192.168.5.6;Initial Catalog=AdventureWorks;User ID=sa;Password=cipher";
+            sqlWebService.ConnectionString = "Data Source=192.168.5.6;Initial Catalog=AdventureWorks;User ID=sa;Password=password";
             textConnectionString.Text = sqlWebService.ConnectionString;
             textListenerPrefix.Text = sqlWebService.ListenerPrefix;
             textRecordsPerPage.Text = sqlWebService.RecordsPerPage.ToString();
