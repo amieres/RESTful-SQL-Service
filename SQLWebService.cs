@@ -40,6 +40,14 @@ namespace REST.Service {
             if (Connection.State != System.Data.ConnectionState.Open)
                 Connection.Open();
             System.Data.SqlClient.SqlCommand SqlCommandC = Connection.CreateCommand();
+            SqlCommandC.CommandText = "SELECT 1";
+            try {
+                SqlCommandC.ExecuteReader().Close();
+            }
+            catch { }
+            if (Connection.State != System.Data.ConnectionState.Open)
+                Connection.Open();
+            SqlCommandC = Connection.CreateCommand();
             SqlCommandC.CommandText = Query;
             SqlCommandC.CommandTimeout = CommandTimeoutInSeconds;
             return SqlCommandC;
@@ -129,7 +137,7 @@ namespace REST.Service {
         }
         public int RecordsPerPage = 20;
         public string GetFieldsFromQuery(string Query) {
-            using (System.Data.SqlClient.SqlCommand Command = GetCommand(Query)) {
+            using (System.Data.SqlClient.SqlCommand Command = GetCommand("SELECT * FROM (" + Query + ") S WHERE 1=2")) {
                 using (System.Data.SqlClient.SqlDataReader reader = Command.ExecuteReader()) {
                     string result = "";
                     for (int I = 0; I < reader.VisibleFieldCount; I++)
@@ -251,7 +259,7 @@ namespace REST.Service {
                                 case "table": table = values[0]; break;
                                 case "keyvalue": keyvalue = values[0]; break;
                                 case "keyfield": keyfield = values[0]; break;
-                                case "condition": condition = values[0]; break;
+                                case "condition": condition = (condition != "" ? condition + " AND " : "") + values[0]; break;
                                 case "fields": Fields = values[0]; break;
                                 case "orderby": OrderBy = values[0]; break;
                                 case "xmlsuffix": XmlSuffix = values[0]; break;
