@@ -159,15 +159,15 @@ namespace REST.Service {
             if (Path.Length == n)
                 return false;
             if (Path.Length > n)
-                database = Path[n];
+                database = System.Net.WebUtility.UrlDecode(Path[n]);
             if (Path.Length > n + 1)
-                schema = Path[n + 1];
+                schema =   System.Net.WebUtility.UrlDecode(Path[n + 1]);
             if (Path.Length > n + 2)
-                table = Path[n + 2];
+                table =    System.Net.WebUtility.UrlDecode(Path[n + 2]);
             if (Path.Length == n + 4)
-                KeyValue = Path[n + 3];
+                KeyValue = System.Net.WebUtility.UrlDecode(Path[n + 3]);
             for (; Path.Length > n + 4; n += 2)
-                condition = (condition != "" ? condition + " AND " : "") + "(" + Path[n + 3] + " = '" + Path[n + 4] + "')";
+                condition = (condition != "" ? condition + " AND " : "") + "(" + System.Net.WebUtility.UrlDecode(Path[n + 3]) + " = '" + System.Net.WebUtility.UrlDecode(Path[n + 4]) + "')";
             return true;
         }
         public string GetFirstField(string Fields) {
@@ -212,7 +212,7 @@ namespace REST.Service {
             result += "append\t=sometext\n\t";
             result += "callback\t=jsoncallback\n\t";
             try {
-                string Mime = "text/plain";
+                string Mime = "";
                 string condition = "";
                 string database = "";
                 string schema = "";
@@ -280,12 +280,15 @@ namespace REST.Service {
                     else table = "[" + table + "]";
                     if (schema != "") schema = "[" + schema + "]";
                     if (schema != "" || database != "") schema = schema + ".";
-                    if (basequery == "") basequery = "SELECT * FROM " + database + schema + table;
+                    if (basequery == "")
+                        basequery = "SELECT " + Fields + " FROM " + database + schema + table;
+                    else
+                        basequery = "SELECT " + Fields + " FROM (" + basequery + ") S";
                     if (OrderBy == "")
                         if (keyfield != "")
                             OrderBy = keyfield;
                         else {
-                            if (Fields == "*") Fields = GetFieldsFromQuery(basequery);
+                            Fields = GetFieldsFromQuery(basequery);
                             OrderBy = GetFirstField(Fields);
                         }
                     if (keyvalue != "") {
@@ -294,7 +297,7 @@ namespace REST.Service {
                     }
                     if (condition != "")
                         basequery += " WHERE " + condition;
-                    string query = "WITH _BaseQuery_ as (\n\t" + basequery + "\n)\n";
+                    string query = "WITH  _BaseQuery_ as (\n\t" + basequery + "\n)\n";
                     query += ", _QueryRowNum_ as (\n\tSELECT *, _Row_Num = ROW_NUMBER() OVER (ORDER BY " + OrderBy + ")\n\tFROM _BaseQuery_\n)\n";
                     query += ", _QueryPaged_ as (\n\tSELECT " + Fields + "\n\tFROM _QueryRowNum_\n\t";
                     if (Finish < 0)
@@ -310,12 +313,14 @@ namespace REST.Service {
                     if (ShowQuery)
                         result = query;
                     else {
-                        if (format == "xml")
+                        if (format == "xml") 
                             result = ProcessSqlXml(query);
                         else
                             result = ProcessSqlXmlToJson(query);
                         result = Prepend + result + callback + Append;
                     }
+                    if (Mime == "")
+                        Mime = ShowQuery ? "text/plain" : (format == "xml" ? "text/xml" : "text/json");
                 }
                 context.Response.ContentType = Mime;
             }
