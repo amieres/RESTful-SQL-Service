@@ -2,6 +2,8 @@
 This is a simple and generic REST service for SQL Server
 It is built in windows forms using C# and .net 4.5.1
 
+Here is an installer: https://app.box.com/s/h0gt74xx9xvdk55b0rno4wm5v4iu1o12
+
 Run as administrator
 
 Currently only GET is implemented.
